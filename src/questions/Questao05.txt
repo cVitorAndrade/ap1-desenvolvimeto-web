@@ -1,0 +1,53 @@
+Utilizando-se da abordagem do PROPS DRILLING, se necessitamos de usar um valor em um componente ComponentePai, e também queremos usar o mesmo em um componente ComponenteFilho, precisamos passar para esse ComponenteFilho como uma pros. Imaginemos ter que usar agora esse valor em um componente ComponenteNeto, teremos que passar de ComponentePai para ComponenteFilho, e de ComponenteFilho para ComponenteNeto. A depender do caso pode crescer muito mais.
+
+const ComponentePai = () => {
+    const valor = "valor"
+
+    return (
+        <ComponenteFilho valor={meuValor} />
+    )
+}
+
+const ComponenteFilho = ({valor}) => {
+
+    return (
+        <ComponenteNeto valor={valor} />
+    )
+}
+
+const ComponenteNeto = ({valor}) => {
+
+    return (
+        <p>{valor}</p>
+    )
+}
+
+
+Usando a abordagem de Contexto, podemos criar um Contexto que disponibiliza esse valor para os componentes que desejamos. Podendo usa-lo só onde necessário.
+
+import { createContext, useContext } from "react"
+
+const MeuContexto = createContext("")
+
+const ComponentePai = () => {
+    const valor = "valor"
+
+    return (
+        <MeuContexto.Provider value={valor}>
+            <ComponenteFilho />
+        </MeuContexto.Provider>
+    )
+}
+
+const ComponenteFilho = () => {
+    return (
+        <ComponenteNeto/>
+    )
+}
+
+const ComponenteNeto = () => {
+    const valor = useContext(MeuContexto)
+    return (
+        <p>{valor}</p>
+    )
+}
